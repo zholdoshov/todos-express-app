@@ -2,78 +2,65 @@ const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const router = express.Router();
 
-let todos = [
-    {
-        id: uuidv4(),
-        title: 'Go to gym',
-        completed: false,
-    },
-    {
-        id: uuidv4(),
-        title: 'Do homeworks',
-        completed: false,
-    },
-]
+const {
+    getTodos,
+    getTodo,
+    addTodo,
+    updateTodo,
+    deleteTodo
+} = require('../db');
 
-router.get('/', (req, res) => {
-    res.send(todos);
+
+router.get('/', async (req, res) => {
+    const todos = await getTodos();
+    if (!todos || todos.length === 0) {
+        res.status(404).send('No todos found');
+        return;
+    }
+    res.status(200).send(todos);
 })
 
-router.post('/', (req, res) => {
-
+router.post('/', async (req, res) => {
     const { title } = req.body;
-
-    const newTodo = {
-        id: uuidv4(),
-        title: title,
-        completed: false,
-    }
-
-    todos.push(newTodo);
+    const newTodo = await addTodo(title);
     res.status(201).send(newTodo);
 })
 
 router
     .route('/:id')
-    .get((req, res) => {
+    .get(async (req, res) => {
         const id = req.params.id;
-        const todoWithGivenId = todos.find(todo => todo.id === id);
-
-        if (!todoWithGivenId) {
+        const todo = await getTodo(id);
+        if (!todo) {
             res.status(404).send(`Todo with id:${id} not found!`);
             return;
         }
-        res.send(`Get todo with id:${id}`);
+        res.status(200).send(todo);
     })
-    .patch((req, res) => {
+    .patch(async (req, res) => {
         const id = req.params.id;
-        const todoToUpdate = todos.find(todo => todo.id === id);
-
-        if (!todoToUpdate) {
-            res.status(404).send(`Todo with id:${id} not found!`);
-            return;
-        }
-
-        todos.forEach(todo => {
-            if (todo.id === id) {
-                todo.completed = true;
-            }
-        })
-
-        res.send(todoToUpdate);
-    })
-    .delete((req, res) => {
-        const id = req.params.id;
-        const todoWithGivenId = todos.find(todo => todo.id === id);
+        const { completed } = req.body;
+        const todoWithGivenId = await getTodo(id);
 
         if (!todoWithGivenId) {
             res.status(404).send(`Todo with id:${id} not found!`);
             return;
         }
 
-        todos = todos.filter(todo => todo.id !== id);
+        await updateTodo(id, completed);
+        res.send(`Updated todo with id:${id}`);
+    })
+    .delete(async (req, res) => {
+        const id = req.params.id;
+        const todoWithGivenId = await getTodo(id);
 
-        res.send(`Delete todo with id:${id}`);
+        if (!todoWithGivenId) {
+            res.status(404).send(`Todo with id:${id} not found!`);
+            return;
+        }
+
+        await deleteTodo(id);
+        res.send(`Deleted todo with id:${id}`);
     })
 
 module.exports = router
