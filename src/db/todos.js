@@ -1,14 +1,5 @@
-const mysql = require('mysql2')
 const { v4: uuidv4 } = require('uuid');
-const dotenv = require('dotenv');
-dotenv.config();
-
-const pool = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-}).promise();
+const pool = require('./index'); // Assuming you have a pool.js file that exports the MySQL connection pool
 
 async function getTodos() {
     try {

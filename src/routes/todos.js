@@ -1,5 +1,4 @@
 const express = require('express');
-const { v4: uuidv4 } = require('uuid');
 const router = express.Router();
 
 const {
@@ -8,7 +7,7 @@ const {
     addTodo,
     updateTodo,
     deleteTodo
-} = require('../db');
+} = require('../db/todos');
 
 
 router.get('/', async (req, res) => {
