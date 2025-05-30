@@ -1,4 +1,3 @@
-const { v4: uuidv4 } = require('uuid');
 const pool = require('./index'); // Assuming you have a pool.js file that exports the MySQL connection pool
 
 async function getUsers() {
@@ -10,7 +9,16 @@ async function getUsers() {
     }
 }
 
-async function getUser(id) {
+async function getUserWithUsername(username) {
+    try {
+        const [rows] = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
+        return rows[0]; // Return the first user with the given username
+    } catch (error) {
+        console.error(`Error fetching user with username ${username}:`, error);
+    }
+}
+
+async function getUserWithId(id) {
     try {
         const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [id]);
         return rows[0]; // Return the first user with the given id
@@ -19,20 +27,28 @@ async function getUser(id) {
     }
 }
 
-async function addUser(name, email) {
+async function userExists(username) {
     try {
-        const id = uuidv4(); // Generate a unique ID for the user
-        await pool.query('INSERT INTO users (id, name, email) VALUES (?, ?, ?)', [id, name, email]);
+        const [rows] = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
+        return rows.length > 0; // Return true if user exists, false otherwise
+    } catch (error) {
+        console.error(`Error checking if user ${username} exists:`, error);
+    }
+}
+
+async function addUser(id, username, password) {
+    try {
+        await pool.query('INSERT INTO users (id, username, password) VALUES (?, ?, ?)', [id, username, password]);
         return getUser(id); // Return the newly added user
     } catch (error) {
         console.error('Error adding user:', error);
     }
 }
 
-async function updateUser(id, name, email) {
+async function updateUser(id, username) {
     try {
-        await pool.query('UPDATE users SET name = ?, email = ? WHERE id = ?', [name, email, id]);
-        console.log(`Updated user with ID: ${id}, name: ${name}, email: ${email}`);
+        await pool.query('UPDATE users SET username = ? WHERE id = ?', [username, id]);
+        console.log(`Updated user with ID: ${id}, username: ${username}`);
         return getUser(id); // Return the updated user
     } catch (error) {
         console.error(`Error updating user with id ${id}:`, error);
@@ -50,7 +66,9 @@ async function deleteUser(id) {
 
 module.exports = {
     getUsers,
-    getUser,
+    getUserWithUsername,
+    getUserWithId,
+    userExists,
     addUser,
     updateUser,
     deleteUser
