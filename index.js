@@ -33,7 +33,6 @@ app.use(authenticate); // Apply authentication middleware globally
 
 // Protected routes
 app.use('/users', userRouter)
-// app.use('/todos', todoRouter)
 
 app.listen(PORT, () => {
     console.log(`Server is running at http://localhost:${PORT}`);

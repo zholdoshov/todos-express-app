@@ -1,6 +1,6 @@
 const pool = require('./index'); // Assuming you have a pool.js file that exports the MySQL connection pool
 
-async function getUsers() {
+async function getUsersFromDB() {
     try {
         const [rows] = await pool.query('SELECT * FROM users');
         return rows; // Return all todos
@@ -9,7 +9,7 @@ async function getUsers() {
     }
 }
 
-async function getUserWithUsername(username) {
+async function getUserWithUsernameFromDB(username) {
     try {
         const [rows] = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
         return rows[0]; // Return the first user with the given username
@@ -18,7 +18,7 @@ async function getUserWithUsername(username) {
     }
 }
 
-async function getUserWithId(id) {
+async function getUserWithIdFromDB(id) {
     try {
         const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [id]);
         return rows[0]; // Return the first user with the given id
@@ -27,7 +27,7 @@ async function getUserWithId(id) {
     }
 }
 
-async function userExists(username) {
+async function userExistsInDB(username) {
     try {
         const [rows] = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
         return rows.length > 0; // Return true if user exists, false otherwise
@@ -36,7 +36,7 @@ async function userExists(username) {
     }
 }
 
-async function addUser(id, username, password) {
+async function addUserToDB(id, username, password) {
     try {
         await pool.query('INSERT INTO users (id, username, password) VALUES (?, ?, ?)', [id, username, password]);
         return getUser(id); // Return the newly added user
@@ -45,7 +45,7 @@ async function addUser(id, username, password) {
     }
 }
 
-async function updateUser(id, username) {
+async function updateUserInDB(id, username) {
     try {
         await pool.query('UPDATE users SET username = ? WHERE id = ?', [username, id]);
         console.log(`Updated user with ID: ${id}, username: ${username}`);
@@ -55,7 +55,7 @@ async function updateUser(id, username) {
     }
 }
 
-async function deleteUser(id) {
+async function deleteUserFromDB(id) {
     try {
         await pool.query('DELETE FROM users WHERE id = ?', [id]);
         console.log(`Deleted user with ID: ${id}`);
@@ -65,11 +65,11 @@ async function deleteUser(id) {
 }
 
 module.exports = {
-    getUsers,
-    getUserWithUsername,
-    getUserWithId,
-    userExists,
-    addUser,
-    updateUser,
-    deleteUser
+    getUsersFromDB,
+    getUserWithUsernameFromDB,
+    getUserWithIdFromDB,
+    userExistsInDB,
+    addUserToDB,
+    updateUserInDB,
+    deleteUserFromDB
 };
