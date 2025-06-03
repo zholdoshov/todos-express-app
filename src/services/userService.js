@@ -1,4 +1,4 @@
-const { getUsersFromDB, getUserWithUsernameFromDB, getUserWithIdFromDB, userExistsInDB, addUserToDB, updateUserInDB, deleteUserFromDB } = require('../db/users');
+const { getUsersFromDB, getUserWithUsernameFromDB, getUserWithIdFromDB, userExistsInDB, addUserToDB, updateUserInDB, deleteUserFromDB } = require('../repository/userRepo');
 
 const getUser = async (userId) => {
     return await getUserWithIdFromDB(userId);

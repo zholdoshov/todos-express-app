@@ -1,4 +1,4 @@
-const { getTodosFromDB, getTodoFromDB, addTodoToDB, updateTodoInDB, deleteTodoFromDB } = require('../db/todos');
+const { getTodosFromDB, getTodoFromDB, addTodoToDB, updateTodoInDB, deleteTodoFromDB } = require('../repository/todoRepo');
 
 const getTodos = async (userId) => {
     return await getTodosFromDB(userId);

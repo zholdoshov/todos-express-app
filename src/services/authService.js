@@ -1,4 +1,4 @@
-const { userExistsInDB, addUserToDB, getUserWithUsernameFromDB } = require('../db/users');
+const { userExistsInDB, addUserToDB, getUserWithUsernameFromDB } = require('../repository/userRepo');
 const { v4: uuidv4 } = require('uuid');
 const { encryptPassword, comparePassword } = require('../util/password');
 const { signToken } = require('../util/token');

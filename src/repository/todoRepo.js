@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
-const pool = require('./index'); // Assuming you have a pool.js file that exports the MySQL connection pool
+const pool = require('../db/index'); // Assuming you have a pool.js file that exports the MySQL connection pool
 // const { get } = require('../routes/todos');
 
 async function getTodosFromDB(userId) {
